@@ -1,0 +1,71 @@
+# Three roles, each pointing at a provider. Swap anything here, or override per run:
+#   uv run aula run --level 3 --planner openrouter:anthropic/claude-opus-5.5 --decider llamacpp:any
+#
+# planner  plans the task per screen (OpenAI-compatible chat).
+# decider  picks operation + element every step (the Jev role). protocol "systemone" talks the
+#          Jev wire API natively (TypeSafe Jev, Laya, OpenJev, Codiv, ...). protocol "chat" emulates it
+#          with any chat LLM (one-hot probabilities), so any model can play Jev.
+# writer   writes field values for TYPE_TEXT (OpenAI-compatible chat, JSON mode).
+
+[providers.openrouter]
+base_url = "https://openrouter.ai/api/v1"
+api_key_env = "OPENROUTER_API_KEY"
+protocol = "chat"
+
+[providers.laya]            # uv run aula laya   (local, https://github.com/NandhaKishorM/laya)
+base_url = "http://127.0.0.1:8000"
+api_key_env = "LAYA_API_KEY"
+protocol = "systemone"
+
+[providers.jevk5]           # uv run aula jevk5   (local, https://github.com/allebee/jevk5, Qwen3.5 + LoRA)
+base_url = "http://127.0.0.1:8091"
+protocol = "systemone"
+
+[providers.openjev]         # razorback16/openjev docker (vLLM). Its default port clashes with llama.cpp.
+base_url = "http://127.0.0.1:8090"
+api_key_env = "OPENJEV_API_KEY"
+protocol = "systemone"
+
+[providers.codiv]           # hosted OpenJev models
+base_url = "https://api.codiv.ai"
+api_key_env = "CODIV_API_KEY"
+protocol = "systemone"
+
+[providers.typesafe]        # the original, closed Jev
+base_url = "https://api.typesafe.ai"
+api_key_env = "TYPESAFE_API_KEY"
+protocol = "systemone"
+
+[providers.llamacpp]        # local llama-server
+base_url = "http://127.0.0.1:8080/v1"
+protocol = "chat"
+
+[roles.planner]
+provider = "openrouter"
+model = "google/gemini-3.8-flash"
+extra = { reasoning = { effort = "low" } }  # this model refuses reasoning = off
+
+[roles.decider]
+provider = "jevk5"
+model = "alibiserikbay/JevK5-9B"
+# "full" sends jev's request untouched (right for TypeSafe Jev / OpenJev). "compact" gives small
+# encoders the plan as state and short per-head questions: Laya is near-random on the full request.
+# (The multilingual checkpoint reads longer states but is strongly biased to option 1 here.)
+shape = "full"
+# extra = { max_len = 4096 }   # anything here is merged into every request body
+
+[roles.writer]
+provider = "openrouter"
+model = "inception/mercury-2.5"
+extra = { reasoning = { enabled = false } }
+
+[run]
+# When the planner re-plans: "navigate" (every new screen), "block" (only when stuck), "never".
+replan = "navigate"
+max_replans = 80
+max_steps = 60
+# Also re-plan after this many actions on the same screen (popups do not change the URL).
+# A small decider cannot tell which plan steps are done, so with Laya the planner re-reads every step.
+replan_every = 1
+# A DONE below this confidence re-plans instead of ending the run (DONE is still not proof: see grading).
+done_min_confidence = 0.6

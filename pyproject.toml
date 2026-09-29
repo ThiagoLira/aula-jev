@@ -1,0 +1,26 @@
+[project]
+name = "aula-jev"
+version = "0.1.0"
+description = "Drive jev-ultrafast with swappable planner / decider / writer models against a ladder of obnoxious meme web shops."
+requires-python = ">=3.12"
+dependencies = [
+  "jev-ultrafast @ git+https://github.com/browser-use/jev-ultrafast",
+  "httpx[http2]>=0.28,<1",
+]
+
+[project.optional-dependencies]
+# Local Jev-compatible decision server (https://github.com/NandhaKishorM/laya).
+laya = ["laya[serve]"]
+
+[project.scripts]
+aula = "aula_jev.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.ruff]
+line-length = 120

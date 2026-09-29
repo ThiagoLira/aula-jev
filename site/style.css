@@ -1,0 +1,68 @@
+/* Level 0 is a sober shop. Every level above it gets uglier on purpose. */
+:root { --bg: #f6f7f9; --fg: #1d2330; --accent: #2f6fed; --card: #fff; --line: #d9dde5; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+header { display: flex; gap: 16px; align-items: center; padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--line); }
+#logo { font-weight: 700; font-size: 20px; color: inherit; text-decoration: none; }
+#tagline { flex: 1; color: #667; }
+main { max-width: 860px; margin: 0 auto; padding: 16px 24px 80px; }
+h1 { margin: 8px 0 16px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.card h2 { font-size: 18px; margin: 0 0 4px; }
+.card p { margin: 4px 0; }
+.price { font-weight: 700; }
+.field { display: grid; gap: 4px; margin: 10px 0; max-width: 420px; }
+.field small { color: #667; }
+input[type=text], input[type=email], select, .row input { font: inherit; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; }
+.check { display: block; margin: 8px 0; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; margin: 12px 0; }
+.actions { display: flex; gap: 12px; align-items: center; margin: 16px 0; flex-wrap: wrap; }
+button { font: inherit; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); cursor: pointer; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button:disabled { opacity: .5; cursor: wait; }
+#errors p, #flash { color: #b00020; font-weight: 600; }
+.summary li { margin: 4px 0; }
+#modal { position: fixed; inset: 0; background: #0008; display: grid; place-items: center; z-index: 10; }
+#modal[hidden] { display: none; }
+.dialog { position: relative; background: var(--card); max-width: 560px; padding: 20px 24px; border-radius: 12px; }
+.curtain { position: fixed; inset: 0; z-index: 20; background: #fffe; display: grid; place-content: center; text-align: center; }
+.spinner { width: 48px; height: 48px; margin: auto; border: 6px solid #ddd; border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.tile { border: 2px solid var(--line); padding: 10px; cursor: pointer; user-select: none; }
+.tile[aria-checked=true] { border-color: var(--accent); background: #e6efff; }
+.x { position: absolute; top: 6px; right: 10px; border: none; font-size: 22px; }
+
+/* ---- level 1: a little tacky */
+body.lv1, body.lv2, body.lv3, body.lv4, body.lv5, body.lv6 { --accent: #e0218a; }
+
+/* ---- level 2+: marketing got the keys */
+body:is(.lv2, .lv3, .lv4, .lv5, .lv6) { --bg: #fffbe0; font-family: "Comic Sans MS", "Comic Neue", cursive; }
+#ticker { background: #ff0; color: #c00; font-weight: 700; overflow: hidden; white-space: nowrap; padding: 4px 0; }
+#ticker span { display: inline-block; padding-left: 100%; animation: ticker 14s linear infinite; }
+@keyframes ticker { to { transform: translateX(-100%); } }
+button.huge { font-size: 22px; padding: 16px 28px; font-weight: 800; box-shadow: 0 6px 0 #900; }
+button.decoy { background: #1ec74b; border-color: #1ec74b; box-shadow: 0 6px 0 #0a7a2a; }
+button.sadlink { background: none; border: none; color: #aab; font-size: 11px; text-decoration: underline; padding: 2px; }
+.card.ad { grid-column: 1 / -1; background: linear-gradient(90deg, #ffd700, #ff8c00); border: 4px dashed #c00; }
+.fine { font-size: 10px; color: #99a; }
+
+/* ---- level 3+: design by committee */
+body:is(.lv3, .lv4, .lv5, .lv6) .field span { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #b5b; }
+.terms { font-size: 11px; color: #889; }
+
+/* ---- level 4+: security theater */
+body:is(.lv4, .lv5, .lv6) h1 { transform: rotate(-1deg); color: #c00; }
+
+/* ---- level 5+: chaos */
+body:is(.lv5, .lv6) { background: repeating-linear-gradient(45deg, #fffbe0 0 20px, #fff0f5 20px 40px); }
+body:is(.lv5, .lv6) h1 { animation: wobble 2s ease-in-out infinite; }
+@keyframes wobble { 50% { transform: rotate(1.5deg) scale(1.03); } }
+#suggestions { list-style: none; padding: 0; max-width: 420px; background: #fff; }
+#suggestions li { padding: 6px 10px; border-bottom: 1px solid var(--line); cursor: pointer; }
+
+/* ---- level 6: div soup */
+.row { display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 8px; margin: 6px 0; max-width: 560px; }
+.cell { font-size: 12px; color: #889; }
+.divbtn { display: inline-block; background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 6px; cursor: pointer; user-select: none; }
